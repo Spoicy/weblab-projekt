@@ -1,0 +1,43 @@
+<section>
+    <div class="container">
+        <h2>Submit</h2>
+        <form [formGroup]="ContactForm" (ngSubmit)="onSubmit()">
+            <div class="form-outline mb-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900" for="name">Name</label>
+                <input type="text" formControlName="name" id="name" class="block flex-1 border-2 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Your Name" required />
+            </div>
+            
+            <div class="form-outline mb-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900" for="category">Kategorie</label>
+                <input type="text" formControlName="category" id="category" class="block flex-1 border-2 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder=""
+                    required />
+            </div>
+            
+            <div class="form-outline mb-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900" for="ring">Ring</label>
+                <input type="text" formControlName="ring" id="ring" class="block flex-1 border-2 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder=""
+                 />
+            </div>
+            
+            <div class="form-outline mb-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900" for="descTechnology">Beschreibung Technologie</label>
+                <input type="text" formControlName="descTechnology" id="descTechnology" class="block flex-1 border-2 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder=""
+                    required />
+            </div>
+            
+            <div class="form-outline mb-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900" for="descClassification">Beschreibung der Einordnung</label>
+                <input type="text" formControlName="descClassification" id="descClassification" class="block flex-1 border-2 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="" />
+            </div>
+
+            <div class="text-center text-lg-start mt-4 pt-2">
+                <button type="submit" [disabled]="ContactForm.invalid" class="btn btn-primary btn-lg w-100"
+                    style="padding-left: 2.5rem; padding-right: 2.5rem; border-radius: 40px;">Send
+                    Message</button>
+                <p *ngIf="isSubmit"> {{submitMessage}}</p>
+            </div>
+        </form>
+    </div>
+</section>
