@@ -49,7 +49,7 @@ app.post('/technology/add', (req, res) => {
 
 app.get('/technology', (req, res) => {
     try {
-        const q = 'SELECT * FROM technology';
+        const q = 'SELECT * FROM technology WHERE published = true';
         db.query(q, (err, data) => {
             if (err) {
                 console.error('Error during fetch:', err);
