@@ -7,4 +7,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'weblab-projekt';
+
+  current: string = 'view';
+
+  changeView(view: string) {
+    this.current = view;
+  }
 }
