@@ -47,6 +47,26 @@ app.post('/technology/add', (req, res) => {
     }
 });
 
+app.put('/technology/publish', (req, res) => {
+    try {
+        const { id, ring, descClassification } = req.body;
+        const q = 'UPDATE technology SET ring = ? AND desc_classification = ? AND published = true AND published_at = ? WHERE id = ?';
+        let dateObj = new Date();
+        const values = [ring, descClassification, Math.floor(dateObj.getTime() / 1000, id)];
+
+        db.query(q, values, (err, data) => {
+            if (err) {
+                console.error('Error during update:', err);
+                return res.status(500).json({ success: false, message: 'An error occurred' });
+            }
+            res.status(200).json({ success: true, message: 'Tech updated successfully' });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'An error occurred' });
+    }
+});
+
 app.get('/technology', (req, res) => {
     try {
         const q = 'SELECT * FROM technology WHERE published = true';
