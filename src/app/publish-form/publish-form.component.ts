@@ -27,11 +27,13 @@ export class PublishFormComponent {
     if (this.PublishForm.valid) {
       const formData = this.PublishForm.value;
       formData.id = this.tech.id;
+      console.log(formData);
       axios
         .put('http://localhost:8000/technology/publish', formData)
         .then(response => {
-          this.submitMessage = "Tech updated successfully!";
+          this.submitMessage = "";
           this.closeFormEvent.emit("update");
+          console.log('emited');
         })
         .catch(error => {
           console.log(error);

@@ -12,12 +12,7 @@ export class UnpublishedDisplayComponent {
   selectedTech!: Object;
 
   ngOnInit() {
-    axios
-      .get(`http://localhost:8000/technology/unpublished`)
-      .then(response => {
-        this.unpublished = response.data;
-        console.log(response.data);
-      });
+    this.getUnpublished();
   }
 
   openPublishEdit(id: number) {
@@ -31,7 +26,20 @@ export class UnpublishedDisplayComponent {
   }
 
   closePublishEdit() {
-    this.selectedTech = 0;
-    this.selectedTech = {};
+    this.getUnpublished();
+    setTimeout(() => {
+      this.selectedTech = {};
+      this.selectedId = 0;
+      console.log('closing');
+    }, 50)
+  }
+  
+  getUnpublished() {
+    axios
+      .get(`http://localhost:8000/technology/unpublished`)
+      .then(response => {
+        this.unpublished = response.data;
+        console.log(response.data);
+      });
   }
 }

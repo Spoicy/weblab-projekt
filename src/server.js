@@ -50,9 +50,11 @@ app.post('/technology/add', (req, res) => {
 app.put('/technology/publish', (req, res) => {
     try {
         const { id, ring, descClassification } = req.body;
-        const q = 'UPDATE technology SET ring = ? AND desc_classification = ? AND published = true AND published_at = ? WHERE id = ?';
+        console.log(id);
+        const q = 'UPDATE technology SET ring = ?, desc_classification = ?, published = true, published_at = ? WHERE id = ?';
         let dateObj = new Date();
-        const values = [ring, descClassification, Math.floor(dateObj.getTime() / 1000, id)];
+        const values = [ring, descClassification, Math.floor(dateObj.getTime() / 1000), id];
+
 
         db.query(q, values, (err, data) => {
             if (err) {
