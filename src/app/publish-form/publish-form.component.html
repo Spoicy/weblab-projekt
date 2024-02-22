@@ -1,0 +1,31 @@
+<section>
+    <div class="container">
+        <h2>Submit</h2>
+        <form [formGroup]="PublishForm" (ngSubmit)="onSubmit()">
+            <div class="form-outline mb-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900" for="ring">Ring</label>
+                <select type="text" formControlName="ring" id="ring"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    placeholder="" required>
+                    <option value="assess">Assess</option>
+                    <option value="trial">Trial</option>
+                    <option value="adopt">Adopt</option>
+                    <option value="hold">Hold</option>
+                </select>
+            </div>
+            <div class="form-outline mb-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900" for="descClassification">Beschreibung der
+                    Einordnung</label>
+                <textarea rows="3" formControlName="descClassification" id="descClassification"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="" required></textarea>
+            </div>
+
+            <div class="text-center text-lg-start mt-4 pt-2">
+                <button type="submit" [disabled]="PublishForm.invalid" class="btn btn-primary btn-lg w-100"
+                    style="padding-left: 2.5rem; padding-right: 2.5rem; border-radius: 40px;">Add Technology</button>
+                <p *ngIf="isSubmit"> {{submitMessage}}</p>
+            </div>
+        </form>
+    </div>
+</section>

@@ -10,9 +10,11 @@
     <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="viewswitch" (click)="changeView('view')">View</button>
     <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="createswitch" (click)="changeView('create')">Create</button>
     <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="updateswitch" (click)="changeView('update')">Update</button>
+    <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="publishswitch" (click)="changeView('publish')">Publish</button>
   </nav>
   <h1 class="text-3xl text-center pt-4">Technologie-Radar</h1>
   <app-technology-display *ngIf="current == 'view'"></app-technology-display>
   <app-technology-form *ngIf="current == 'create'"></app-technology-form>
+  <app-unpublished-display *ngIf="current == 'publish'"></app-unpublished-display>
 </body>
 </html>

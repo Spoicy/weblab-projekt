@@ -10,14 +10,14 @@ import axios from 'axios';
 export class TechnologyFormComponent {
   title="Technology Form";
 
-  ContactForm!: FormGroup;
+  AddForm!: FormGroup;
   isSubmit = true;
   submitMessage = "";
 
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.ContactForm = this.formBuilder.group({
+    this.AddForm = this.formBuilder.group({
       name: ['', Validators.required],
       category: ['', Validators.required],
       ring: [''],
@@ -27,15 +27,15 @@ export class TechnologyFormComponent {
   }
 
   onSubmit() {
-    if (this.ContactForm.valid) {
-      const formData = this.ContactForm.value;
+    if (this.AddForm.valid) {
+      const formData = this.AddForm.value;
       console.log(formData.kyc_update);
 
       axios
         .post('http://localhost:8000/technology/add', formData)
         .then(response => {
           this.submitMessage = "Tech saved successfully!";
-          this.ContactForm.reset();
+          this.AddForm.reset();
         })
         .catch(error => {
           console.log(error);

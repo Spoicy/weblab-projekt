@@ -1,0 +1,18 @@
+<section>
+    <div class="unpublished">
+        <ul *ngIf="selectedId == 0">
+            <li *ngFor="let item of unpublished">
+                <div class="flex">
+                    <span>{{item.name}}</span>
+                    <span>{{item.category}}</span>
+                    <span>
+                        <button (click)="openPublishEdit(item.id)">
+                            <arrow-up-on-square-outline-icon></arrow-up-on-square-outline-icon>
+                        </button>
+                    </span>
+                </div>
+            </li>
+        </ul>
+        <app-publish-form *ngIf="selectedId != 0" [tech]="selectedTech" (closeFormEvent)="closePublishEdit()"></app-publish-form>
+    </div>
+</section>
