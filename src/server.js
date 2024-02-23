@@ -101,6 +101,22 @@ app.get('/technology/unpublished', (req, res) => {
     }
 })
 
+app.get('/technology/all', (req, res) => {
+    try {
+        const q = 'SELECT * FROM technology';
+        db.query(q, (err, data) => {
+            if (err) {
+                console.error('Error during fetch:', err);
+                return res.status(500).json({ success: false, message: 'An error occured' });
+            }
+            res.status(200).json(data);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'An error occurred' });
+    }
+})
+
 app.listen(port, () => {
     console.log(`Connected to backend on port ${port}`)
 });

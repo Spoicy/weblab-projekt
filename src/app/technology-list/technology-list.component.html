@@ -1,0 +1,27 @@
+<section>
+    <div class="technology-list">
+        <ul *ngIf="selectedId == 0">
+            <li *ngFor="let item of technologies">
+                <div class="flex">
+                    <span>{{item.name}}</span>
+                    <span>{{item.category}}</span>
+                    <span>
+                        <button (click)="openUpdateEdit(item.id)">
+                            <arrow-up-on-square-outline-icon></arrow-up-on-square-outline-icon>
+                        </button>
+                    </span>
+                    <span *ngIf="item.published == 0">
+                        <button (click)="openPublishEdit(item.id)">
+                            <arrow-up-on-square-outline-icon></arrow-up-on-square-outline-icon>
+                        </button>
+                    </span>
+                </div>
+            </li>
+        </ul>
+        <app-publish-form *ngIf="selectedId != 0 && currentState == 'publish'" [tech]="selectedTech"
+            (closeFormEvent)="closeEdit()"></app-publish-form>
+
+        <app-update-form *ngIf="selectedId != 0 && currentState == 'update'" [tech]="selectedTech"
+            (closeFormEvent)="closeEdit()"></app-update-form>
+    </div>
+</section>

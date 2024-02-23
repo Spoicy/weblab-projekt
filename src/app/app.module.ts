@@ -9,6 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TechnologyDisplayComponent } from './technology-display/technology-display.component';
 import { UnpublishedDisplayComponent } from './unpublished-display/unpublished-display.component';
 import { PublishFormComponent } from './publish-form/publish-form.component';
+import { TechnologyListComponent } from './technology-list/technology-list.component';
+import { UpdateFormComponent } from './update-form/update-form.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { PublishFormComponent } from './publish-form/publish-form.component';
     TechnologyDisplayComponent,
     UnpublishedDisplayComponent,
     PublishFormComponent,
+    TechnologyListComponent,
+    UpdateFormComponent,
   ],
   imports: [
     BrowserModule,
