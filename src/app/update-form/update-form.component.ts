@@ -10,6 +10,7 @@ import axios from 'axios';
 export class UpdateFormComponent {
   @Input() tech!: any;
   @Output() closeFormEvent = new EventEmitter<string>();
+  @Output() updateRefreshEvent = new EventEmitter<string>();
   UpdateForm!: FormGroup;
   isSubmit = true;
   submitMessage = "";
@@ -40,13 +41,11 @@ export class UpdateFormComponent {
     if (this.UpdateForm.valid) {
       const formData = this.UpdateForm.value;
       formData.id = this.tech.id;
-      console.log(formData);
       axios
         .put('http://localhost:8000/technology/update', formData)
         .then(response => {
-          this.submitMessage = "";
-          this.closeFormEvent.emit("update");
-          console.log('emited');
+          this.submitMessage = "Tech updated";
+          this.updateRefreshEvent.emit('update');
         })
         .catch(error => {
           console.log(error);
@@ -59,5 +58,9 @@ export class UpdateFormComponent {
           }, 5000);
         })
     }
+  }
+
+  emitClose() {
+    this.closeFormEvent.emit('close');
   }
 }

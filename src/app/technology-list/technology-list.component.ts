@@ -18,7 +18,7 @@ export class TechnologyListComponent {
 
   openUpdateEdit(id: number) {
     this.getSpecificTechnology(id);
-    this.currentState = 'publish';
+    this.currentState = 'update';
   }
 
   openPublishEdit(id: number) {

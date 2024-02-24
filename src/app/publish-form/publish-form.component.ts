@@ -10,6 +10,7 @@ import axios from 'axios';
 export class PublishFormComponent {
   @Input() tech!: any;
   @Output() closeFormEvent = new EventEmitter<string>();
+  @Output() updateRefreshEvent = new EventEmitter<string>();
   PublishForm!: FormGroup;
   isSubmit = true;
   submitMessage = "";
@@ -32,12 +33,14 @@ export class PublishFormComponent {
         .put('http://localhost:8000/technology/publish', formData)
         .then(response => {
           this.submitMessage = "";
-          this.closeFormEvent.emit("update");
+          this.updateRefreshEvent.emit('update');
+          setTimeout(() => { return; }, 100)
+          this.closeFormEvent.emit("publish");
           console.log('emited');
         })
         .catch(error => {
           console.log(error);
-          this.submitMessage = "Tech failed to update";
+          this.submitMessage = "Tech failed to be published";
         })
         .finally(() => {
           this.isSubmit = true;

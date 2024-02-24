@@ -7,11 +7,9 @@
                     <span>{{item.category}}</span>
                     <span>
                         <button (click)="openUpdateEdit(item.id)">
-                            <arrow-up-on-square-outline-icon></arrow-up-on-square-outline-icon>
+                            <pencil-square-outline-icon></pencil-square-outline-icon>
                         </button>
-                    </span>
-                    <span *ngIf="item.published == 0">
-                        <button (click)="openPublishEdit(item.id)">
+                        <button *ngIf="item.published == 0" (click)="openPublishEdit(item.id)">
                             <arrow-up-on-square-outline-icon></arrow-up-on-square-outline-icon>
                         </button>
                     </span>
@@ -19,9 +17,9 @@
             </li>
         </ul>
         <app-publish-form *ngIf="selectedId != 0 && currentState == 'publish'" [tech]="selectedTech"
-            (closeFormEvent)="closeEdit()"></app-publish-form>
+            (closeFormEvent)="closeEdit()" (updateRefreshEvent)="getAllTechnologies()"></app-publish-form>
 
         <app-update-form *ngIf="selectedId != 0 && currentState == 'update'" [tech]="selectedTech"
-            (closeFormEvent)="closeEdit()"></app-update-form>
+            (closeFormEvent)="closeEdit()" (updateRefreshEvent)="getAllTechnologies()"></app-update-form>
     </div>
 </section>

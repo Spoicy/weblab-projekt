@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Technology } from '../technology';
 import axios from 'axios';
 
 @Component({
