@@ -2,9 +2,15 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+const fs = require('node:fs');
+const jwt = require('jsonwebtoken');
+
 
 const port = 8000; // local port
 const app = express() // Initialize the express app
+
+const RSA_PRIVATE_KEY = fs.readFileSync(__dirname + '/private.key');
 
 // mysql database connection
 const db = mysql.createPool({
@@ -24,7 +30,61 @@ app.use(cors())
 app.get("/", (req, res) => {
     res.json("API reached successfully!");
 });
-app.post
+
+app.post('/login', (req, res) => {
+    console.log('entering');
+    try {
+        const { username, password } = req.body;
+        const q = 'SELECT * FROM user WHERE name = "cto_admin"';
+        console.log('querying', username, password)
+        db.query(q, (err, data) => {
+            if (err) {
+                console.error('Error during fetch:', err);
+                return res.status(500).json({ success: false, message: 'An error occurred' });
+            }
+            bcrypt
+                .compare(password, data[0].hashed_pass)
+                .then(response => {
+                    if (response) {
+                        const jwtBearerToken = jwt.sign({}, RSA_PRIVATE_KEY, {
+                            algorithm: 'RS256',
+                            expiresIn: 7200,
+                            subject: username
+                        })
+                        return res.status(200).json({ success: true, idToken: jwtBearerToken, expiresIn: 7200 });
+                    }
+                })
+                .catch(err => console.error(err.message))
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: 'An error occurred' });
+    }
+});
+
+app.get('/login/verify', (req, res) => {
+    const authHeader = req.headers['authorization'];
+    console.log(authHeader);
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log('checking');
+
+    if (token == null) return res.status(401);
+    console.log('e');
+
+    jwt.verify(token, RSA_PRIVATE_KEY, (err, user) => {
+        console.log('heyyy');
+        console.log(err);
+        if (err) {
+            return res.status(403);
+        }
+        console.log(user.sub);
+        if (user.sub == 'cto_admin') {
+            console.log('yes?')
+            res.status(200).json({ admin: true });
+        }
+    })
+    
+});
 
 // contact form route
 app.post('/technology/add', (req, res) => {
@@ -79,6 +139,7 @@ app.put('/technology/update', (req, res) => {
         const valuesChange = [Math.floor(dateObj.getTime() / 1000)];
 
         db.query(q, valuesUpdate, (err, data) => {
+            console.log(data)
             if (err) {
                 console.error('Error during update:', err);
                 return res.status(500).json({ success: false, message: 'An error occurred' });

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Technologie-Radar</title>
 </head>
-<body>
-  <nav class="flex gap-2">
+<body *ngIf="loggedin">
+  <nav *ngIf="isAdmin" class="flex gap-2">
     <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="viewswitch" (click)="changeView('view')">View</button>
     <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="createswitch" (click)="changeView('create')">Create</button>
     <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="listswitch" (click)="changeView('list')">List</button>
@@ -16,5 +16,8 @@
   <app-technology-form *ngIf="current == 'create'"></app-technology-form>
   <app-technology-list *ngIf="current == 'list'"></app-technology-list>
   <app-unpublished-display *ngIf="current == 'publish'"></app-unpublished-display>
+</body>
+<body *ngIf="!loggedin">
+  <app-login (loginAttemptEvent)="checkJWT()"></app-login>
 </body>
 </html>

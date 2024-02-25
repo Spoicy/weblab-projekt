@@ -11,6 +11,7 @@ import { UnpublishedDisplayComponent } from './unpublished-display/unpublished-d
 import { PublishFormComponent } from './publish-form/publish-form.component';
 import { TechnologyListComponent } from './technology-list/technology-list.component';
 import { UpdateFormComponent } from './update-form/update-form.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { UpdateFormComponent } from './update-form/update-form.component';
     PublishFormComponent,
     TechnologyListComponent,
     UpdateFormComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
