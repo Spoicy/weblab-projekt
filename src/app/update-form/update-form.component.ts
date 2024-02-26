@@ -42,7 +42,11 @@ export class UpdateFormComponent {
       const formData = this.UpdateForm.value;
       formData.id = this.tech.id;
       axios
-        .put('http://localhost:8000/technology/update', formData)
+        .put('http://localhost:8000/technology/update', formData, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('id_token')
+          }
+        })
         .then(response => {
           this.submitMessage = "Tech updated";
           this.updateRefreshEvent.emit('update');

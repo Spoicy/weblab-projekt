@@ -45,7 +45,11 @@ export class TechnologyListComponent {
 
   getAllTechnologies() {
     axios
-      .get(`http://localhost:8000/technology/all`)
+      .get(`http://localhost:8000/technology/all`, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('id_token')
+        }
+      })
       .then(response => {
         this.technologies = response.data;
         console.log(response.data);

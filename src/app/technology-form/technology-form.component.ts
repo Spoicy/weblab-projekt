@@ -32,7 +32,11 @@ export class TechnologyFormComponent {
       console.log(formData.kyc_update);
 
       axios
-        .post('http://localhost:8000/technology/add', formData)
+        .post('http://localhost:8000/technology/add', formData, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('id_token')
+          }
+        })
         .then(response => {
           this.submitMessage = "Tech saved successfully!";
           this.AddForm.reset();

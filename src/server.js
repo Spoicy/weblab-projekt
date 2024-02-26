@@ -12,6 +12,29 @@ const app = express() // Initialize the express app
 
 const RSA_PRIVATE_KEY = fs.readFileSync(__dirname + '/private.key');
 
+const adminCheck = (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log(token == undefined);
+
+    if (token == null) return false;
+    if (token == undefined) return false;
+
+    jwt.verify(token, RSA_PRIVATE_KEY, (err, user) => {
+        console.log(err);
+        if (err) {
+            return false;
+        }
+        console.log(user.sub);
+        if (user.sub == 'cto_admin') {
+            console.log('yes?')
+        } else {
+            return false;
+        }
+    })
+    return true;
+}
+
 // mysql database connection
 const db = mysql.createPool({
     connectionLimit: 10,
@@ -35,9 +58,11 @@ app.post('/login', (req, res) => {
     console.log('entering');
     try {
         const { username, password } = req.body;
-        const q = 'SELECT * FROM user WHERE name = "cto_admin"';
+        const q = 'SELECT * FROM user WHERE name = ?';
+        const qHistory = 'INSERT INTO login_history (login_at, user_id) VALUES (?, ?)';
+        
         console.log('querying', username, password)
-        db.query(q, (err, data) => {
+        db.query(q, [username], (err, data) => {
             if (err) {
                 console.error('Error during fetch:', err);
                 return res.status(500).json({ success: false, message: 'An error occurred' });
@@ -51,6 +76,14 @@ app.post('/login', (req, res) => {
                             expiresIn: 7200,
                             subject: username
                         })
+                        let dateObj = new Date();
+                        const historyValues = [Math.floor(dateObj.getTime() / 1000), data[0].id];
+                        db.query (qHistory, historyValues, (err, data) => {
+                            if (err) {
+                                console.error('Error during insert:', err);
+                                return res.status(500).json({ success: false, message: 'An error occurred' });
+                            }
+                        })
                         return res.status(200).json({ success: true, idToken: jwtBearerToken, expiresIn: 7200 });
                     }
                 })
@@ -63,33 +96,20 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/login/verify', (req, res) => {
-    const authHeader = req.headers['authorization'];
-    console.log(authHeader);
-    const token = authHeader && authHeader.split(' ')[1];
-    console.log('checking');
-
-    if (token == null) return res.status(401);
-    console.log('e');
-
-    jwt.verify(token, RSA_PRIVATE_KEY, (err, user) => {
-        console.log('heyyy');
-        console.log(err);
-        if (err) {
-            return res.status(403);
-        }
-        console.log(user.sub);
-        if (user.sub == 'cto_admin') {
-            console.log('yes?')
-            res.status(200).json({ admin: true });
-        }
-    })
-    
+    if (!adminCheck(req, res)) {
+        return res.status(401).json({ admin: false });
+    }
+    res.status(200).json({ admin: true });
 });
 
 // contact form route
 app.post('/technology/add', (req, res) => {
+    if (!adminCheck(req, res)) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     try {
         const { name, category, ring, descTechnology, descClassification } = req.body;
+        console.log(req.body);
         const q = 'INSERT INTO technology (name, category, ring, desc_technology, desc_classification, published, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         let dateObj = new Date();
         const values = [name, category, ring, descTechnology, descClassification, false, 1, Math.floor(dateObj.getTime() / 1000)];
@@ -108,21 +128,60 @@ app.post('/technology/add', (req, res) => {
 });
 
 app.put('/technology/publish', (req, res) => {
+    if (!adminCheck(req, res)) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     try {
         const { id, ring, descClassification } = req.body;
         console.log(id);
         const q = 'UPDATE technology SET ring = ?, desc_classification = ?, published = true, published_at = ? WHERE id = ?';
+        const qOld = 'SELECT * FROM technology WHERE id = ?';
+        const qHistoryPub = 'INSERT INTO change_history (change_type, changes, changed_at, changed_by, tech_id) VALUES (?, ?, ?, ?, ?)';
+        const qHistoryUpdate = 'INSERT INTO change_history (change_type, changes, changed_at, changed_by, tech_id) VALUES (?, ?, ?, ?, ?)';
         let dateObj = new Date();
         const values = [ring, descClassification, Math.floor(dateObj.getTime() / 1000), id];
+        const oldValues = [id];
+        const historyValuesPub = ['publish', JSON.stringify([]), Math.floor(dateObj.getTime() / 1000), 1, id];
+        //const historyValuesUpdate = ['update', Math.floor(dateObj.getTime() / 1000), 1, id];
 
-
-        db.query(q, values, (err, data) => {
+        // Get old data before changes
+        db.query(qOld, oldValues, (err, dataOld) => {
             if (err) {
-                console.error('Error during update:', err);
+                console.error('Error during old fetch:', err);
                 return res.status(500).json({ success: false, message: 'An error occurred' });
             }
-            res.status(200).json({ success: true, message: 'Tech updated successfully' });
+            // Check for changes
+            let changes = [];
+            if (dataOld[0].ring != ring) {
+                changes.push({ring: ring});
+            }
+            if (dataOld[0].desc_classification != descClassification) {
+                changes.push({ desc_classification: descClassification });
+            }
+            const historyValuesUpdate = ['update', JSON.stringify(changes), Math.floor(dateObj.getTime() / 1000), 1, id];
+            // Change data
+            db.query(q, values, (err, data) => {
+                if (err) {
+                    console.error('Error during update:', err);
+                    return res.status(500).json({ success: false, message: 'An error occurred' });
+                }
+                // History inserts
+                db.query(qHistoryPub, historyValuesPub, (err, data) => {
+                    if (err) {
+                        console.error('Error during insert:', err);
+                        return res.status(500).json({ success: false, message: 'An error occurred' });
+                    }
+                });
+                db.query(qHistoryUpdate, historyValuesUpdate, (err, data) => {
+                    if (err) {
+                        console.error('Error during insert:', err);
+                        return res.status(500).json({ success: false, message: 'An error occurred' });
+                    }
+                });
+                res.status(200).json({ success: true, message: 'Tech updated successfully' });
+            });
         });
+
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ success: false, message: 'An error occurred' });
@@ -130,21 +189,56 @@ app.put('/technology/publish', (req, res) => {
 });
 
 app.put('/technology/update', (req, res) => {
+    if (!adminCheck(req, res)) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     try {
         const { id, name, category, ring, descTechnology, descClassification } = req.body;
         console.log(id);
         const q = 'UPDATE technology SET name = ?, category = ?, ring = ?, desc_technology = ?, desc_classification = ? WHERE id = ?';
+        const qOld = 'SELECT * FROM technology WHERE id = ?';
+        const qHistoryUpdate = 'INSERT INTO change_history (change_type, changes, changed_at, changed_by, tech_id) VALUES (?, ?, ?, ?, ?)';
         let dateObj = new Date();
         const valuesUpdate = [name, category, ring, descTechnology, descClassification, id];
-        const valuesChange = [Math.floor(dateObj.getTime() / 1000)];
+        const oldValues = [id];
 
-        db.query(q, valuesUpdate, (err, data) => {
-            console.log(data)
+        db.query(qOld, oldValues, (err, dataOld) => {
             if (err) {
-                console.error('Error during update:', err);
+                console.error('Error during old fetch:', err);
                 return res.status(500).json({ success: false, message: 'An error occurred' });
             }
-            res.status(200).json({ success: true, message: 'Tech updated successfully' });
+            let changes = [];
+            if (dataOld[0].name != name) {
+                changes.push({ name: name });
+            }
+            if (dataOld[0].category != category) {
+                changes.push({ category: category });
+            }
+            if (dataOld[0].ring != ring) {
+                changes.push({ ring: ring });
+            }
+            if (dataOld[0].desc_technology != descTechnology) {
+                changes.push({ desc_technology: descTechnology });
+            }
+            if (dataOld[0].desc_classification != descClassification) {
+                changes.push({ desc_classification: descClassification });
+            }
+            const historyValuesUpdate = ['update', JSON.stringify(changes), Math.floor(dateObj.getTime() / 1000), 1, id];
+            db.query(q, valuesUpdate, (err, data) => {
+                console.log(data)
+                if (err) {
+                    console.error('Error during update:', err);
+                    return res.status(500).json({ success: false, message: 'An error occurred' });
+                }
+                
+                db.query(qHistoryUpdate, historyValuesUpdate, (err, data) => {
+                    if (err) {
+                        console.error('Error during insert:', err);
+                        return res.status(500).json({ success: false, message: 'An error occurred' });
+                    }
+                });
+                res.status(200).json({ success: true, message: 'Tech updated successfully' });
+            });
         });
     } catch (error) {
         console.error('Error:', error);
@@ -169,6 +263,9 @@ app.get('/technology', (req, res) => {
 });
 
 app.get('/technology/unpublished', (req, res) => {
+    if (!adminCheck(req, res)) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     try {
         const q = 'SELECT * FROM technology WHERE published = false';
         db.query(q, (err, data) => {
@@ -185,6 +282,9 @@ app.get('/technology/unpublished', (req, res) => {
 })
 
 app.get('/technology/all', (req, res) => {
+    if (!adminCheck(req, res)) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     try {
         const q = 'SELECT * FROM technology';
         db.query(q, (err, data) => {

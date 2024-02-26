@@ -30,7 +30,11 @@ export class PublishFormComponent {
       formData.id = this.tech.id;
       console.log(formData);
       axios
-        .put('http://localhost:8000/technology/publish', formData)
+        .put('http://localhost:8000/technology/publish', formData, {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('id_token')
+          }
+        })
         .then(response => {
           this.submitMessage = "";
           this.updateRefreshEvent.emit('update');
