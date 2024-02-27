@@ -1,12 +1,11 @@
 <section>
-    <div class="container">
-        <h2>Submit</h2>
+    <div>
         <form [formGroup]="UpdateForm" (ngSubmit)="onSubmit()">
             <div class="form-outline mb-2">
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="name">Name</label>
                 <input type="text" formControlName="name" id="name"
                     class="block flex-1 border-2 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="Your Name" required />
+                    required />
             </div>
 
             <div class="form-outline mb-2">
@@ -37,7 +36,7 @@
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="descTechnology">Beschreibung
                     Technologie</label>
                 <textarea rows="3" formControlName="descTechnology" id="descTechnology"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     placeholder="" required></textarea>
             </div>
 
@@ -45,15 +44,16 @@
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="descClassification">Beschreibung
                     der Einordnung</label>
                 <textarea rows="3" formControlName="descClassification" id="descClassification"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     placeholder=""></textarea>
             </div>
 
-            <div class="text-center text-lg-start mt-4 pt-2">
-                <button type="submit" [disabled]="UpdateForm.invalid" class="btn btn-primary btn-lg w-100"
-                    style="padding-left: 2.5rem; padding-right: 2.5rem; border-radius: 40px;">Update Technology</button>
-                <button (click)="emitClose()">Go back</button>
-                <p *ngIf="isSubmit"> {{submitMessage}}</p>
+            <div class="text-center mt-4 pt-2">
+                <button type="submit" [disabled]="UpdateForm.invalid" class="text-lg font-bold p-2 border-2 rounded-lg flex-1 mr-2"
+                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Update Technology</button>
+                <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" style="padding-left: 2.5rem; padding-right: 2.5rem;"
+                 (click)="emitClose()">Go Back</button>
+                <p class="pt-2 text-lg font-bold" *ngIf="isSubmit"> {{submitMessage}}</p>
             </div>
         </form>
     </div>

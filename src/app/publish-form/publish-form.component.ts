@@ -28,7 +28,6 @@ export class PublishFormComponent {
     if (this.PublishForm.valid) {
       const formData = this.PublishForm.value;
       formData.id = this.tech.id;
-      console.log(formData);
       axios
         .put('http://localhost:8000/technology/publish', formData, {
           headers: {
@@ -40,7 +39,6 @@ export class PublishFormComponent {
           this.updateRefreshEvent.emit('update');
           setTimeout(() => { return; }, 100)
           this.closeFormEvent.emit("publish");
-          console.log('emited');
         })
         .catch(error => {
           console.log(error);
@@ -53,5 +51,9 @@ export class PublishFormComponent {
           }, 5000);
         })
     }
+  }
+
+  emitClose() {
+    this.closeFormEvent.emit('close');
   }
 }

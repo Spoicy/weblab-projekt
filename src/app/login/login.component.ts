@@ -22,14 +22,12 @@ export class LoginComponent {
   }
 
   login() {
-    console.log('attempting login')
     const data = this.form.value;
 
     if (data.username && data.password) {
       axios
         .post('http://localhost:8000/login', data)
         .then(response => {
-          console.log(response.data);
           localStorage.setItem('id_token', response.data.idToken);
           localStorage.setItem('expires_at', JSON.stringify(response.data.expiresIn.valueOf()))
           this.loginAttemptEvent.emit(response.data.success);

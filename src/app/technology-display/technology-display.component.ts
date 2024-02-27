@@ -14,7 +14,6 @@ export class TechnologyDisplayComponent {
       .get(`http://localhost:8000/technology`)
       .then(response => {
         this.technologies = response.data;
-        console.log(response.data);
       });
   }
 }

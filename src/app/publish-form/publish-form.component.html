@@ -1,6 +1,5 @@
 <section>
-    <div class="container">
-        <h2>Submit</h2>
+    <div>
         <form [formGroup]="PublishForm" (ngSubmit)="onSubmit()">
             <div class="form-outline mb-2">
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="ring">Ring</label>
@@ -17,14 +16,16 @@
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="descClassification">Beschreibung der
                     Einordnung</label>
                 <textarea rows="3" formControlName="descClassification" id="descClassification"
-                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     placeholder="" required></textarea>
             </div>
 
-            <div class="text-center text-lg-start mt-4 pt-2">
-                <button type="submit" [disabled]="PublishForm.invalid" class="btn btn-primary btn-lg w-100"
-                    style="padding-left: 2.5rem; padding-right: 2.5rem; border-radius: 40px;">Publish Technology</button>
-                <p *ngIf="isSubmit"> {{submitMessage}}</p>
+            <div class="text-center mt-4 pt-2">
+                <button type="submit" [disabled]="PublishForm.invalid" class="text-lg font-bold p-2 border-2 rounded-lg flex-1 mr-2"
+                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Publish Technology</button>
+                <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" style="padding-left: 2.5rem; padding-right: 2.5rem;"
+                    (click)="emitClose()">Go Back</button>
+                <p class="pt-2 text-lg font-bold" *ngIf="isSubmit"> {{submitMessage}}</p>
             </div>
         </form>
     </div>

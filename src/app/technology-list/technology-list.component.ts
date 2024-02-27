@@ -30,7 +30,6 @@ export class TechnologyListComponent {
     this.selectedTech = {};
     this.selectedId = 0;
     this.currentState = '';
-    console.log('closing');
   }
 
   getSpecificTechnology(id: number) {
@@ -52,7 +51,21 @@ export class TechnologyListComponent {
       })
       .then(response => {
         this.technologies = response.data;
-        console.log(response.data);
       });
+  }
+
+  getCategoryName(name: string) {
+    switch (name) {
+      case 'tools':
+        return 'Tools';
+      case 'techniques':
+        return 'Techniques';
+      case 'langsframeworks':
+        return 'Languages & Frameworks';
+      case 'platforms':
+        return 'Platforms';
+      default:
+        return name;
+    }
   }
 }

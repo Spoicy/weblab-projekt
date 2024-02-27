@@ -1,11 +1,11 @@
 <section>
-    <div class="technology-list">
+    <div class="technology-list p-4">
         <ul *ngIf="selectedId == 0">
-            <li *ngFor="let item of technologies">
-                <div class="flex">
-                    <span>{{item.name}}</span>
-                    <span>{{item.category}}</span>
-                    <span>
+            <li *ngFor="let item of technologies" class="border-t-4">
+                <div class="flex text-lg">
+                    <span class="flex-none p-2 font-bold">{{item.name}}</span>
+                    <span class="flex-1 p-2">{{getCategoryName(item.category)}}</span>
+                    <span class="flex-none p-2">
                         <button (click)="openUpdateEdit(item.id)">
                             <pencil-square-outline-icon></pencil-square-outline-icon>
                         </button>

@@ -15,7 +15,6 @@ const RSA_PRIVATE_KEY = fs.readFileSync(__dirname + '/private.key');
 const adminCheck = (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    console.log(token == undefined);
 
     if (token == null) return false;
     if (token == undefined) return false;
@@ -25,9 +24,8 @@ const adminCheck = (req, res) => {
         if (err) {
             return false;
         }
-        console.log(user.sub);
         if (user.sub == 'cto_admin') {
-            console.log('yes?')
+            console.log('admin')
         } else {
             return false;
         }
@@ -55,13 +53,10 @@ app.get("/", (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    console.log('entering');
     try {
         const { username, password } = req.body;
         const q = 'SELECT * FROM user WHERE name = ?';
         const qHistory = 'INSERT INTO login_history (login_at, user_id) VALUES (?, ?)';
-        
-        console.log('querying', username, password)
         db.query(q, [username], (err, data) => {
             if (err) {
                 console.error('Error during fetch:', err);
@@ -109,7 +104,6 @@ app.post('/technology/add', (req, res) => {
     }
     try {
         const { name, category, ring, descTechnology, descClassification } = req.body;
-        console.log(req.body);
         const q = 'INSERT INTO technology (name, category, ring, desc_technology, desc_classification, published, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         let dateObj = new Date();
         const values = [name, category, ring, descTechnology, descClassification, false, 1, Math.floor(dateObj.getTime() / 1000)];
@@ -133,7 +127,6 @@ app.put('/technology/publish', (req, res) => {
     }
     try {
         const { id, ring, descClassification } = req.body;
-        console.log(id);
         const q = 'UPDATE technology SET ring = ?, desc_classification = ?, published = true, published_at = ? WHERE id = ?';
         const qOld = 'SELECT * FROM technology WHERE id = ?';
         const qHistoryPub = 'INSERT INTO change_history (change_type, changes, changed_at, changed_by, tech_id) VALUES (?, ?, ?, ?, ?)';
@@ -194,7 +187,6 @@ app.put('/technology/update', (req, res) => {
     }
     try {
         const { id, name, category, ring, descTechnology, descClassification } = req.body;
-        console.log(id);
         const q = 'UPDATE technology SET name = ?, category = ?, ring = ?, desc_technology = ?, desc_classification = ? WHERE id = ?';
         const qOld = 'SELECT * FROM technology WHERE id = ?';
         const qHistoryUpdate = 'INSERT INTO change_history (change_type, changes, changed_at, changed_by, tech_id) VALUES (?, ?, ?, ?, ?)';
@@ -225,7 +217,6 @@ app.put('/technology/update', (req, res) => {
             }
             const historyValuesUpdate = ['update', JSON.stringify(changes), Math.floor(dateObj.getTime() / 1000), 1, id];
             db.query(q, valuesUpdate, (err, data) => {
-                console.log(data)
                 if (err) {
                     console.error('Error during update:', err);
                     return res.status(500).json({ success: false, message: 'An error occurred' });

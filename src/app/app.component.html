@@ -5,22 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Technologie-Radar</title>
 </head>
-<body *ngIf="loggedin">
+<body *ngIf="loggedin" class="pb-4">
   <nav *ngIf="isAdmin" class="flex gap-2">
-    <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="viewswitch" (click)="changeView('view')">View</button>
-    <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="createswitch" (click)="changeView('create')">Create</button>
-    <button class="text-lg font-bold p-2 border-2 rounded-lg flex-1" id="listswitch" (click)="changeView('list')">List</button>
+    <button class="text-lg font-bold p-2 border-2 rounded-br-lg flex-1" id="viewswitch" (click)="changeView('view')">View</button>
+    <button class="text-lg font-bold p-2 border-2 rounded-bl-lg rounded-br-lg flex-1" id="createswitch" (click)="changeView('create')">Create</button>
+    <button class="text-lg font-bold p-2 border-2 rounded-bl-lg flex-1" id="listswitch" (click)="changeView('list')">List</button>
   </nav>
-  <h1 class="text-3xl text-center pt-4">Technologie-Radar</h1>
+  <h1 class="text-3xl text-center pt-4 pb-2 font-bold">Technologie-Radar</h1>
   <app-technology-display *ngIf="current == 'view'"></app-technology-display>
   <app-technology-form *ngIf="current == 'create'"></app-technology-form>
   <app-technology-list *ngIf="current == 'list'"></app-technology-list>
-  <div class="text-center text-lg-start mt-4 pt-2">
-    <button (click)="logout()" class="btn btn-primary btn-lg w-100"
-      style="padding-left: 2.5rem; padding-right: 2.5rem; border-radius: 40px;">Logout</button>
+  <div class="text-center mt-4 pt-2">
+    <button (click)="logout()" class="text-lg font-bold p-2 border-2 rounded-lg flex-1 bg-stone-100"
+      style="padding-left: 2.5rem; padding-right: 2.5rem; ">Logout</button>
   </div>
 </body>
-<body *ngIf="!loggedin">
-  <app-login (loginAttemptEvent)="checkJWT()"></app-login>
+<body *ngIf="!loggedin" class="p-4">
+  <h1 class="text-3xl pb-4">Login</h1>
+  <app-login (loginAttemptEvent)="loginAttempt()"></app-login>
 </body>
 </html>

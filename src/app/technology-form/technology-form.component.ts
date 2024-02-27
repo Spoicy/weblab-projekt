@@ -29,7 +29,6 @@ export class TechnologyFormComponent {
   onSubmit() {
     if (this.AddForm.valid) {
       const formData = this.AddForm.value;
-      console.log(formData.kyc_update);
 
       axios
         .post('http://localhost:8000/technology/add', formData, {

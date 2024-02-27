@@ -21,7 +21,6 @@ export class AppComponent {
   ngOnInit() {
     this.checkJWT();
     this.checkAdmin();
-    console.log(this.loggedin, this.isAdmin);
   }
 
   changeView(view: string) {
@@ -34,7 +33,6 @@ export class AppComponent {
     }
   }
   checkAdmin() {
-    console.log('testing');
     axios
       .get('http://localhost:8000/login/verify', {
         headers: {
@@ -42,12 +40,15 @@ export class AppComponent {
         }
       })
       .then(response => {
-        console.log(response.data.admin)
         if (response.data.admin) {
           this.isAdmin = true;
-          console.log(this.isAdmin);
         }
       })
+  }
+
+  loginAttempt() {
+    this.checkJWT();
+    this.checkAdmin();
   }
 
   logout() {
