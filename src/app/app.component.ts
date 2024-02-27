@@ -49,4 +49,10 @@ export class AppComponent {
         }
       })
   }
+
+  logout() {
+    localStorage.removeItem('id_token');
+    this.loggedin = false;
+    this.isAdmin = false;
+  }
 }
