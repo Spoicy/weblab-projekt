@@ -15,6 +15,7 @@ const RSA_PRIVATE_KEY = fs.readFileSync(__dirname + '/private.key');
 const adminCheck = (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
+    var isAdmin = true;
 
     if (token == null) return false;
     if (token == undefined) return false;
@@ -22,15 +23,16 @@ const adminCheck = (req, res) => {
     jwt.verify(token, RSA_PRIVATE_KEY, (err, user) => {
         console.log(err);
         if (err) {
-            return false;
+            isAdmin = false;
         }
         if (user.sub == 'cto_admin') {
             console.log('admin')
         } else {
-            return false;
+            isAdmin = false;
         }
     })
-    return true;
+
+    return isAdmin;
 }
 
 // mysql database connection
@@ -60,6 +62,9 @@ app.post('/login', (req, res) => {
         db.query(q, [username], (err, data) => {
             if (err) {
                 console.error('Error during fetch:', err);
+                return res.status(500).json({ success: false, message: 'An error occurred' });
+            }
+            if (data.length < 1) {
                 return res.status(500).json({ success: false, message: 'An error occurred' });
             }
             bcrypt
